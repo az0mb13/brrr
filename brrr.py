@@ -10,13 +10,10 @@ def main():
 
     domain_file = sys.argv[1]
 
-    # Create a list of command arguments
     args = ["tlsx", "-l", domain_file, "-ve", "-ce", "-ct", "all", "-c", "700", "-j", "-o", "output.json"]
 
-    # Run the command
     subprocess.run(args, stdout=subprocess.PIPE, text=True)
 
-    # Parse the output
     parse_output()
 
 
