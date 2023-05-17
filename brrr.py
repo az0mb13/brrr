@@ -14,7 +14,7 @@ def main():
     args = ["tlsx", "-l", domain_file, "-ve", "-ce", "-ct", "all", "-c", "700", "-j", "-o", "output.json"]
 
     # Run the command
-    subprocess.run(args, stdout=subprocess.PIPE, text=True)
+    # subprocess.run(args, stdout=subprocess.PIPE, text=True)
 
     # Parse the output
     parse_output()
@@ -34,6 +34,7 @@ def parse_output():
 
     tls_protocols = {}
     weak_ciphers = {}
+    insecure_ciphers = {}
 
     with open('output.json', 'r') as file:
         for line in file:
@@ -52,6 +53,7 @@ def parse_output():
 
                 for cipher_data in cipher_enum:
                     weak = cipher_data.get('ciphers', {}).get('weak', [])
+                    insecure = cipher_data.get('ciphers', {}).get('insecure', [])
                     protocol = cipher_data.get('version')
 
                     for weak_cipher in weak:
@@ -61,13 +63,20 @@ def parse_output():
                             weak_ciphers[host]['protocols'][protocol] = []
                         weak_ciphers[host]['protocols'][protocol].append(weak_cipher)
 
+                    for insecure_cipher in insecure:
+                        if host not in insecure_ciphers:
+                            insecure_ciphers[host] = {'ip': ip, 'protocols': {}}
+                        if protocol not in insecure_ciphers[host]['protocols']:
+                            insecure_ciphers[host]['protocols'][protocol] = []
+                        insecure_ciphers[host]['protocols'][protocol].append(insecure_cipher)
+
             except json.JSONDecodeError:
                 print(f"Error parsing JSON: {line}")
 
     for host, data in tls_protocols.items():
         print(f"Host: {host} ({data['ip']})")
         print("Deprecated TLS protocols:", ', '.join(data['protocols']))
-        print()
+        print("---\n")
 
     for host, data in weak_ciphers.items():
         print(f"**Host:** {host} ({data['ip']})")
@@ -78,7 +87,13 @@ def parse_output():
             for cipher in ciphers:
                 print(cipher)
             print("```")
-        print()
+            if protocol in insecure_ciphers.get(host, {}).get('protocols', {}):
+                print("**Insecure Ciphers:**\n")
+                print("```")
+                for cipher in insecure_ciphers[host]['protocols'][protocol]:
+                    print(cipher)
+                print("```")
+            print()
 
 
 if __name__ == "__main__":

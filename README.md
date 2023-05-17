@@ -24,3 +24,4 @@ The output contains a list of Deprecated Protocols and Weak Cipher Suites for th
 
 3. Wait for it to run and view the output on the CLI.
 
+![output.png](images/out.png)
