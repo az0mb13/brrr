@@ -14,7 +14,7 @@ def main():
     args = ["tlsx", "-l", domain_file, "-ve", "-ce", "-ct", "all", "-c", "700", "-j", "-o", "output.json"]
 
     # Run the command
-    # subprocess.run(args, stdout=subprocess.PIPE, text=True)
+    subprocess.run(args, stdout=subprocess.PIPE, text=True)
 
     # Parse the output
     parse_output()
