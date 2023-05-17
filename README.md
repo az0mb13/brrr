@@ -1,6 +1,7 @@
 # Brrr3.0
 
-Brrr3.0 is a parser on top of Project Discovery's TLSX tool. This takes a list of hosts as input and returns a markdown output in the CLI. 
+Brrr3.0 is a parser on top of Project Discovery's TLSX tool. This takes a list of hosts as input and returns a markdown output in the CLI. <br>
+The output contains a list of Deprecated Protocols and Weak Cipher Suites for the domains provided. 
 
 ## Requirements
 
